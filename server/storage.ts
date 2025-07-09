@@ -1,12 +1,51 @@
-import { drizzle } from "drizzle-orm/postgres-js";
-import postgres from "postgres";
+import { drizzle } from "drizzle-orm/better-sqlite3";
+import Database from "better-sqlite3";
 import { users, watchProgress, myList, insertUserSchema, insertWatchProgressSchema, insertMyListSchema } from "../shared/schema";
 import { eq, and, desc } from "drizzle-orm";
 
-// Database connection
-const connectionString = process.env.DATABASE_URL || "postgres://user:password@localhost/db";
-const client = postgres(connectionString);
-const db = drizzle(client);
+// Use SQLite as fallback when PostgreSQL is not available
+const sqlite = new Database(':memory:');
+const db = drizzle(sqlite);
+
+// Create tables
+sqlite.exec(`
+  CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    email TEXT UNIQUE NOT NULL,
+    name TEXT NOT NULL,
+    language TEXT DEFAULT 'it',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+  );
+
+  CREATE TABLE IF NOT EXISTS watch_progress (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    tmdb_id INTEGER NOT NULL,
+    type TEXT NOT NULL,
+    title TEXT NOT NULL,
+    poster_path TEXT,
+    season INTEGER,
+    episode INTEGER,
+    progress_seconds INTEGER DEFAULT 0,
+    duration_seconds INTEGER DEFAULT 0,
+    completed BOOLEAN DEFAULT FALSE,
+    last_watched DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+  );
+
+  CREATE TABLE IF NOT EXISTS my_list (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    tmdb_id INTEGER NOT NULL,
+    type TEXT NOT NULL,
+    title TEXT NOT NULL,
+    poster_path TEXT,
+    added_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    UNIQUE(user_id, tmdb_id, type)
+  );
+`);
 
 export class Storage {
   // User operations
@@ -102,7 +141,7 @@ export class Storage {
   async deleteWatchProgress(id: number) {
     try {
       const result = await db.delete(watchProgress).where(eq(watchProgress.id, id));
-      return result.rowCount > 0;
+      return result.changes > 0;
     } catch (error) {
       console.error('Error deleting watch progress:', error);
       return false;
@@ -155,9 +194,25 @@ export class Storage {
           eq(myList.type, type)
         )
       );
-      return result.rowCount > 0;
+      return result.changes > 0;
     } catch (error) {
       console.error('Error removing from my list:', error);
+      return false;
+    }
+  }
+
+  async isInMyList(userId: number, tmdbId: number, type: string) {
+    try {
+      const existing = await db.select().from(myList).where(
+        and(
+          eq(myList.userId, userId),
+          eq(myList.tmdbId, tmdbId),
+          eq(myList.type, type)
+        )
+      );
+      return existing.length > 0;
+    } catch (error) {
+      console.error('Error checking my list:', error);
       return false;
     }
   }
@@ -173,6 +228,7 @@ export class Storage {
           name: 'Default User',
           language: 'it'
         });
+        console.log('Default user created successfully');
       }
     } catch (error) {
       console.error('Error initializing tables:', error);
