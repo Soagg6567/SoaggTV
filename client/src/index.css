@@ -1,0 +1,513 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: hsl(0, 0%, 0%);
+  --foreground: hsl(0, 0%, 100%);
+  --muted: hsl(0, 0%, 7.8%);
+  --muted-foreground: hsl(0, 0%, 64.9%);
+  --popover: hsl(0, 0%, 0%);
+  --popover-foreground: hsl(0, 0%, 100%);
+  --card: hsl(0, 0%, 0%);
+  --card-foreground: hsl(0, 0%, 100%);
+  --border: hsl(0, 0%, 15.9%);
+  --input: hsl(0, 0%, 15.9%);
+  --primary: hsl(0, 0%, 100%);
+  --primary-foreground: hsl(0, 0%, 0%);
+  --secondary: hsl(0, 0%, 15.9%);
+  --secondary-foreground: hsl(0, 0%, 100%);
+  --accent: hsl(0, 0%, 15.9%);
+  --accent-foreground: hsl(0, 0%, 100%);
+  --destructive: hsl(0, 84.2%, 60.2%);
+  --destructive-foreground: hsl(0, 0%, 100%);
+  --ring: hsl(0, 0%, 83.9%);
+  --radius: 0.5rem;
+  --netflix-black: hsl(0, 0%, 0%);
+  --netflix-gray: hsl(0, 0%, 7.1%);
+  --netflix-dark: hsl(0, 0%, 11.8%);
+  --netflix-red: hsl(348, 83%, 47%);
+}
+
+.dark {
+  --background: hsl(0, 0%, 0%);
+  --foreground: hsl(0, 0%, 100%);
+  --muted: hsl(0, 0%, 7.8%);
+  --muted-foreground: hsl(0, 0%, 64.9%);
+  --popover: hsl(0, 0%, 0%);
+  --popover-foreground: hsl(0, 0%, 100%);
+  --card: hsl(0, 0%, 0%);
+  --card-foreground: hsl(0, 0%, 100%);
+  --border: hsl(0, 0%, 15.9%);
+  --input: hsl(0, 0%, 15.9%);
+  --primary: hsl(0, 0%, 100%);
+  --primary-foreground: hsl(0, 0%, 0%);
+  --secondary: hsl(0, 0%, 15.9%);
+  --secondary-foreground: hsl(0, 0%, 100%);
+  --accent: hsl(0, 0%, 15.9%);
+  --accent-foreground: hsl(0, 0%, 100%);
+  --destructive: hsl(0, 62.8%, 30.6%);
+  --destructive-foreground: hsl(0, 0%, 100%);
+  --ring: hsl(0, 0%, 83.9%);
+  --radius: 0.5rem;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* Hide scrollbar for WebKit browsers */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Touch scrolling optimization */
+.touch-scroll {
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+  overscroll-behavior-x: contain;
+}
+
+/* Prevent vertical scrolling during horizontal scroll */
+.scroll-container {
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x mandatory;
+}
+
+.scroll-item {
+  scroll-snap-align: start;
+  flex-shrink: 0;
+}
+
+/* Hide all scrollbars by default */
+* {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+*::-webkit-scrollbar {
+  display: none;
+}
+
+/* Line clamp utilities */
+.line-clamp-1 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+}
+
+.line-clamp-2 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.line-clamp-3 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom focus styles */
+*:focus {
+  outline: 2px solid hsla(0, 0%, 100%, 0.2);
+  outline-offset: 2px;
+}
+
+/* Loading animation */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Aspect ratio utilities */
+.aspect-video {
+  aspect-ratio: 16 / 9;
+}
+
+.aspect-\[2\/3\] {
+  aspect-ratio: 2 / 3;
+}
+
+/* Mobile optimization */
+@media (max-width: 640px) {
+  .touch-pan-x {
+    touch-action: pan-x;
+  }
+  
+  .touch-pan-y {
+    touch-action: pan-y;
+  }
+}
+
+/* Backdrop blur fallback */
+.backdrop-blur-sm {
+  backdrop-filter: blur(4px);
+}
+
+.backdrop-blur-md {
+  backdrop-filter: blur(12px);
+}
+
+/* Improved button hover states */
+button {
+  transition: all 0.2s ease-in-out;
+}
+
+button:hover {
+  transform: translateY(-1px);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+/* Better form inputs */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"] {
+  transition: all 0.2s ease-in-out;
+}
+
+input:focus {
+  transform: scale(1.02);
+}
+
+/* Improved card hover effects */
+.group:hover .group-hover\:scale-110 {
+  transform: scale(1.1);
+}
+
+.group:hover .group-hover\:scale-105 {
+  transform: scale(1.05);
+}
+
+/* Better mobile touch targets */
+@media (max-width: 768px) {
+  button {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* Netflix-style gradient overlays */
+.hero-gradient {
+  background: linear-gradient(
+    to right,
+    hsla(0, 0%, 0%, 0.8) 0%,
+    hsla(0, 0%, 0%, 0.5) 50%,
+    hsla(0, 0%, 0%, 0.1) 100%
+  ),
+  linear-gradient(
+    to top,
+    hsla(0, 0%, 0%, 0.8) 0%,
+    hsla(0, 0%, 0%, 0.1) 50%,
+    hsla(0, 0%, 0%, 0.1) 100%
+  );
+}
+
+.gradient-overlay {
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    hsla(0, 0%, 0%, 0.3) 50%,
+    hsla(0, 0%, 0%, 0.8) 100%
+  );
+}
+
+/* Improved loading states */
+.loading-skeleton {
+  background: linear-gradient(
+    90deg,
+    hsl(0, 0%, 12.2%) 25%,
+    hsl(0, 0%, 21.6%) 50%,
+    hsl(0, 0%, 12.2%) 75%
+  );
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Better responsive grid */
+.responsive-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .responsive-grid {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  }
+}
+
+@media (min-width: 768px) {
+  .responsive-grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .responsive-grid {
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  }
+}
+
+/* Enhanced scroll behavior */
+.scroll-smooth {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Hide scrollbars completely */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Better video player integration */
+iframe {
+  border: none !important;
+  outline: none !important;
+}
+
+/* Improved hover states for cards */
+.media-card {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.media-card:hover {
+  transform: scale(1.05);
+  z-index: 10;
+}
+
+/* Better button integration */
+.integrated-button {
+  background: hsla(0, 0%, 0%, 0.6);
+  backdrop-filter: blur(8px);
+  border: 1px solid hsla(0, 0%, 100%, 0.1);
+  transition: all 0.3s ease;
+}
+
+.integrated-button:hover {
+  background: hsla(0, 0%, 0%, 0.8);
+  border-color: hsla(0, 0%, 100%, 0.2);
+  transform: translateY(-1px);
+}
+
+/* Enhanced modal backgrounds */
+.modal-backdrop {
+  background: hsla(0, 0%, 0%, 0.8);
+  backdrop-filter: blur(4px);
+}
+
+/* Better season/episode layout */
+.season-episode-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+}
+
+@media (max-width: 768px) {
+  .season-episode-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Responsive design improvements */
+@media (max-width: 640px) {
+  .grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 640px) {
+  .sm\:grid-cols-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 768px) {
+  .md\:grid-cols-4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .lg\:grid-cols-5 {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1280px) {
+  .xl\:grid-cols-6 {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+}
+
+/* Better spacing for mobile */
+@media (max-width: 768px) {
+  .px-4 {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  .gap-4 {
+    gap: 0.75rem;
+  }
+  
+  .space-y-6 > * + * {
+    margin-top: 1rem;
+  }
+}
+
+/* Netflix-style transitions */
+.netflix-transition {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Enhanced focus states for accessibility */
+.focus-visible:focus {
+  outline: 2px solid hsl(0, 0%, 100%);
+  outline-offset: 2px;
+}
+
+/* Custom scrollbar for specific elements where needed */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  display: block;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: hsl(0, 0%, 15.9%);
+  border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: hsl(0, 0%, 39.2%);
+  border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: hsl(0, 0%, 49%);
+}
+
+/* Better text selection */
+::selection {
+  background: hsla(0, 0%, 100%, 0.2);
+  color: hsl(0, 0%, 100%);
+}
+
+/* Improved card shadows for depth */
+.card-shadow {
+  box-shadow: 
+    0 4px 6px -1px hsla(0, 0%, 0%, 0.1),
+    0 2px 4px -1px hsla(0, 0%, 0%, 0.06);
+}
+
+.card-shadow-lg {
+  box-shadow: 
+    0 10px 15px -3px hsla(0, 0%, 0%, 0.1),
+    0 4px 6px -2px hsla(0, 0%, 0%, 0.05);
+}
+
+/* Netflix-style rating badges */
+.rating-badge {
+  background: hsla(0, 0%, 0%, 0.7);
+  backdrop-filter: blur(4px);
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: hsl(0, 0%, 100%);
+}
+
+/* Loading spinner */
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Fade in animation */
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* Scale in animation for modals */
+@keyframes scaleIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.2s ease-out;
+}
