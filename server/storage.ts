@@ -1,7 +1,7 @@
 import { drizzle } from "drizzle-orm/libsql";
 import { createClient } from "@libsql/client";
 import { users, watchProgress, myList, insertUserSchema, insertWatchProgressSchema, insertMyListSchema } from "../shared/schema";
-import { eq, and, desc } from "drizzle-orm";
+import { eq, and, desc, sql } from "drizzle-orm";
 
 // Use libsql client for WebContainer compatibility
 const client = createClient({
@@ -85,7 +85,7 @@ export class Storage {
         const [updated] = await db.update(watchProgress)
           .set({
             ...validatedData,
-            lastWatched: new Date()
+            lastWatched: sql`CURRENT_TIMESTAMP`
           })
           .where(eq(watchProgress.id, existing[0].id))
           .returning();
@@ -189,9 +189,9 @@ export class Storage {
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           email TEXT UNIQUE NOT NULL,
           name TEXT NOT NULL,
+          avatar TEXT,
           language TEXT DEFAULT 'it',
-          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-          updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+          created_at TEXT DEFAULT CURRENT_TIMESTAMP
         );
       `);
 
@@ -203,12 +203,11 @@ export class Storage {
           type TEXT NOT NULL,
           title TEXT NOT NULL,
           poster_path TEXT,
+          current_time INTEGER DEFAULT 0,
+          duration INTEGER DEFAULT 0,
           season INTEGER,
           episode INTEGER,
-          progress_seconds INTEGER DEFAULT 0,
-          duration_seconds INTEGER DEFAULT 0,
-          completed BOOLEAN DEFAULT FALSE,
-          last_watched DATETIME DEFAULT CURRENT_TIMESTAMP,
+          last_watched TEXT DEFAULT CURRENT_TIMESTAMP,
           FOREIGN KEY (user_id) REFERENCES users(id)
         );
       `);
@@ -221,7 +220,7 @@ export class Storage {
           type TEXT NOT NULL,
           title TEXT NOT NULL,
           poster_path TEXT,
-          added_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          added_at TEXT DEFAULT CURRENT_TIMESTAMP,
           FOREIGN KEY (user_id) REFERENCES users(id),
           UNIQUE(user_id, tmdb_id, type)
         );

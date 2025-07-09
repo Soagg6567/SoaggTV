@@ -1,18 +1,19 @@
-import { pgTable, text, serial, integer, timestamp, boolean, json } from "drizzle-orm/pg-core";
+import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
+import { sql } from "drizzle-orm";
 
-export const users = pgTable("users", {
-  id: serial("id").primaryKey(),
+export const users = sqliteTable("users", {
+  id: integer("id").primaryKey(),
   email: text("email").notNull().unique(),
   name: text("name").notNull(),
   avatar: text("avatar"),
   language: text("language").notNull().default("it"),
-  createdAt: timestamp("created_at").defaultNow(),
+  createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`),
 });
 
-export const watchProgress = pgTable("watch_progress", {
-  id: serial("id").primaryKey(),
+export const watchProgress = sqliteTable("watch_progress", {
+  id: integer("id").primaryKey(),
   userId: integer("user_id").notNull(),
   tmdbId: integer("tmdb_id").notNull(),
   type: text("type").notNull(), // 'movie' or 'tv'
@@ -22,17 +23,17 @@ export const watchProgress = pgTable("watch_progress", {
   duration: integer("duration").notNull().default(0),
   season: integer("season"),
   episode: integer("episode"),
-  lastWatched: timestamp("last_watched").defaultNow(),
+  lastWatched: text("last_watched").default(sql`CURRENT_TIMESTAMP`),
 });
 
-export const myList = pgTable("my_list", {
-  id: serial("id").primaryKey(),
+export const myList = sqliteTable("my_list", {
+  id: integer("id").primaryKey(),
   userId: integer("user_id").notNull(),
   tmdbId: integer("tmdb_id").notNull(),
   type: text("type").notNull(), // 'movie' or 'tv'
   title: text("title").notNull(),
   posterPath: text("poster_path"),
-  addedAt: timestamp("added_at").defaultNow(),
+  addedAt: text("added_at").default(sql`CURRENT_TIMESTAMP`),
 });
 
 export const insertUserSchema = createInsertSchema(users).omit({
