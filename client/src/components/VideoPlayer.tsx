@@ -29,7 +29,7 @@ export default function VideoPlayer({
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [showCloseButton, setShowCloseButton] = useState(false);
-  const [closeButtonTimer, setCloseButtonTimer] = useState<NodeJS.Timeout | null>(null);
+  const [closeButtonTimer, setCloseButtonTimer] = useState<number | null>(null);
   
   // Get existing progress
   const existingProgress = state.watchProgress.find(p => 

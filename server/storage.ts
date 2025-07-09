@@ -10,50 +10,6 @@ const client = createClient({
 
 const db = drizzle(client);
 
-// Create tables
-await client.execute(`
-  CREATE TABLE IF NOT EXISTS users (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    email TEXT UNIQUE NOT NULL,
-    name TEXT NOT NULL,
-    language TEXT DEFAULT 'it',
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
-  );
-`);
-
-await client.execute(`
-  CREATE TABLE IF NOT EXISTS watch_progress (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER NOT NULL,
-    tmdb_id INTEGER NOT NULL,
-    type TEXT NOT NULL,
-    title TEXT NOT NULL,
-    poster_path TEXT,
-    season INTEGER,
-    episode INTEGER,
-    progress_seconds INTEGER DEFAULT 0,
-    duration_seconds INTEGER DEFAULT 0,
-    completed BOOLEAN DEFAULT FALSE,
-    last_watched DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id)
-  );
-`);
-
-await client.execute(`
-  CREATE TABLE IF NOT EXISTS my_list (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER NOT NULL,
-    tmdb_id INTEGER NOT NULL,
-    type TEXT NOT NULL,
-    title TEXT NOT NULL,
-    poster_path TEXT,
-    added_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id),
-    UNIQUE(user_id, tmdb_id, type)
-  );
-`);
-
 export class Storage {
   // User operations
   async createUser(userData: any) {
@@ -227,6 +183,50 @@ export class Storage {
   // Initialize database tables
   async initializeTables() {
     try {
+      // Create tables first
+      await client.execute(`
+        CREATE TABLE IF NOT EXISTS users (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          email TEXT UNIQUE NOT NULL,
+          name TEXT NOT NULL,
+          language TEXT DEFAULT 'it',
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        );
+      `);
+
+      await client.execute(`
+        CREATE TABLE IF NOT EXISTS watch_progress (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          user_id INTEGER NOT NULL,
+          tmdb_id INTEGER NOT NULL,
+          type TEXT NOT NULL,
+          title TEXT NOT NULL,
+          poster_path TEXT,
+          season INTEGER,
+          episode INTEGER,
+          progress_seconds INTEGER DEFAULT 0,
+          duration_seconds INTEGER DEFAULT 0,
+          completed BOOLEAN DEFAULT FALSE,
+          last_watched DATETIME DEFAULT CURRENT_TIMESTAMP,
+          FOREIGN KEY (user_id) REFERENCES users(id)
+        );
+      `);
+
+      await client.execute(`
+        CREATE TABLE IF NOT EXISTS my_list (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          user_id INTEGER NOT NULL,
+          tmdb_id INTEGER NOT NULL,
+          type TEXT NOT NULL,
+          title TEXT NOT NULL,
+          poster_path TEXT,
+          added_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          FOREIGN KEY (user_id) REFERENCES users(id),
+          UNIQUE(user_id, tmdb_id, type)
+        );
+      `);
+
       // Create default user if not exists
       const existingUser = await this.getUserById(1);
       if (!existingUser) {
