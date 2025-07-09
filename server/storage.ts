@@ -1,14 +1,17 @@
-import { drizzle } from "drizzle-orm/better-sqlite3";
-import Database from "better-sqlite3";
+import { drizzle } from "drizzle-orm/libsql";
+import { createClient } from "@libsql/client";
 import { users, watchProgress, myList, insertUserSchema, insertWatchProgressSchema, insertMyListSchema } from "../shared/schema";
 import { eq, and, desc } from "drizzle-orm";
 
-// Use SQLite as fallback when PostgreSQL is not available
-const sqlite = new Database(':memory:');
-const db = drizzle(sqlite);
+// Use libsql client for WebContainer compatibility
+const client = createClient({
+  url: ":memory:"
+});
+
+const db = drizzle(client);
 
 // Create tables
-sqlite.exec(`
+await client.execute(`
   CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     email TEXT UNIQUE NOT NULL,
@@ -17,7 +20,9 @@ sqlite.exec(`
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
   );
+`);
 
+await client.execute(`
   CREATE TABLE IF NOT EXISTS watch_progress (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INTEGER NOT NULL,
@@ -33,7 +38,9 @@ sqlite.exec(`
     last_watched DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id)
   );
+`);
 
+await client.execute(`
   CREATE TABLE IF NOT EXISTS my_list (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INTEGER NOT NULL,
