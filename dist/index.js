@@ -5,8 +5,8 @@ import express2 from "express";
 import { createServer } from "http";
 
 // server/storage.ts
-import { drizzle } from "drizzle-orm/better-sqlite3";
-import Database from "better-sqlite3";
+import { drizzle } from "drizzle-orm/libsql";
+import { createClient } from "@libsql/client";
 
 // shared/schema.ts
 import { pgTable, text, serial, integer, timestamp } from "drizzle-orm/pg-core";
@@ -58,9 +58,11 @@ var insertMyListSchema = createInsertSchema(myList).omit({
 
 // server/storage.ts
 import { eq, and, desc } from "drizzle-orm";
-var sqlite = new Database(":memory:");
-var db = drizzle(sqlite);
-sqlite.exec(`
+var client = createClient({
+  url: ":memory:"
+});
+var db = drizzle(client);
+await client.execute(`
   CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     email TEXT UNIQUE NOT NULL,
@@ -69,7 +71,8 @@ sqlite.exec(`
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
   );
-
+`);
+await client.execute(`
   CREATE TABLE IF NOT EXISTS watch_progress (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INTEGER NOT NULL,
@@ -85,7 +88,8 @@ sqlite.exec(`
     last_watched DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id)
   );
-
+`);
+await client.execute(`
   CREATE TABLE IF NOT EXISTS my_list (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INTEGER NOT NULL,
