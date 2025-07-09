@@ -173,21 +173,21 @@ export default function VideoPlayer({
     
     // Clear existing timer
     if (closeButtonTimer) {
-      clearTimeout(closeButtonTimer);
+      clearTimeout(closeButtonTimer as NodeJS.Timeout);
     }
     
     // Set new timer to hide button after 1 second
-    const timer = setTimeout(() => {
+    const timer = window.setTimeout(() => {
       setShowCloseButton(false);
     }, 1000);
     
-    setCloseButtonTimer(timer);
+    setCloseButtonTimer(timer as number);
   };
 
   const handleMouseLeave = () => {
     // Clear timer on mouse leave
     if (closeButtonTimer) {
-      clearTimeout(closeButtonTimer);
+      clearTimeout(closeButtonTimer as NodeJS.Timeout);
     }
     setShowCloseButton(false);
   };
@@ -195,7 +195,7 @@ export default function VideoPlayer({
   useEffect(() => {
     return () => {
       if (closeButtonTimer) {
-        clearTimeout(closeButtonTimer);
+        clearTimeout(closeButtonTimer as NodeJS.Timeout);
       }
     };
   }, [closeButtonTimer]);
